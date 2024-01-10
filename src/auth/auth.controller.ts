@@ -37,4 +37,14 @@ export class AuthController {
     const token = await this.authService.generateAccessToken(user.id);
     return { user, token };
   }
+
+  @Post('/email/send')
+  async emailSender(@Body('email') email: string) {
+    return this.authService.emailSender(email);
+  }
+
+  @Post('/email/check')
+  async emailCheck(@Body('email') email: string, @Body('code') code: string) {
+    return this.authService.emailChecker(email, code);
+  }
 }
