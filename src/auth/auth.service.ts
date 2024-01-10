@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { UserService } from '../user/user.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { LoginUserDto } from '../user/dto/login-user.dto';
+import { TokenPayloadInterface } from '../interfaces/tokenPayload.interface';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async createUser(c: CreateUserDto) {
+    return this.userService.createU(c);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async loginUser(l: LoginUserDto) {
+    const user = await this.userService.findUserByEmail(l.email);
+    const ispwMatched = await user.checkPassword(l.password);
+    if (!ispwMatched)
+      throw new HttpException('wrong pw', HttpStatus.BAD_REQUEST);
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  public generateAccessToken(userId: string) {
+    const payload: TokenPayloadInterface = { userId };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
+    });
+    return token;
   }
 }

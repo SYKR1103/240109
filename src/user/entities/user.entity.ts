@@ -1,5 +1,5 @@
 import { BaseEntity } from '../../../common/base.common';
-import { Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { InternalServerErrorException } from '@nestjs/common';
 
@@ -8,12 +8,13 @@ export class User extends BaseEntity {
   @Column()
   public nickname: string;
 
-  @Column()
+  @Column({ unique: true })
   public email: string;
 
-  @Column()
+  @Column({ nullable: true })
   public password: string;
 
+  @BeforeInsert()
   async hashPassword() {
     try {
       const saltValue = await bcrypt.genSalt(10);
