@@ -8,6 +8,7 @@ import { JwtAuthStrategy } from '../strategies/jwt-auth.strategy';
 import { LocalAuthStrategy } from '../strategies/local-auth.strategy';
 import { RedisModule } from '../redis/redis.module';
 import { EmailModule } from '../email/email.module';
+import { GoogleAuthStrategy } from '../strategies/google-auth.strategy';
 
 @Module({
   imports: [
@@ -18,6 +19,11 @@ import { EmailModule } from '../email/email.module';
     EmailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthStrategy, LocalAuthStrategy],
+  providers: [
+    AuthService,
+    JwtAuthStrategy,
+    LocalAuthStrategy,
+    GoogleAuthStrategy,
+  ],
 })
 export class AuthModule {}

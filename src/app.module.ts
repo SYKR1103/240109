@@ -7,6 +7,7 @@ import { DblistModule } from './dblist/dblist.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
+import { MovieModule } from './movie/movie.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -35,6 +36,7 @@ import * as Joi from '@hapi/joi';
     }),
     RedisModule,
     EmailModule,
+    MovieModule,
   ],
   controllers: [AppController],
   providers: [AppService],
